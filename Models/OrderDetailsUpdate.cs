@@ -4,6 +4,6 @@
     {
         public string OrderID { get; set; }
         public string Barcode { get; set; }
-        public int ReservedQuantity { get; set; }
+        public decimal? ReservedQuantity { get; set; }
     }
 }

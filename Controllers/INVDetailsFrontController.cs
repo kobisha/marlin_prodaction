@@ -29,22 +29,21 @@ namespace Marlin.sqlite.Controllers
             {
                 var query = @"
                     SELECT
-                        
-                       
-                        c.""Name"" AS ""Product"",
-                        id.""Barcode"" AS ""Barcode"",
-                        id.""Unit"",
-                        id.""Quantity"" AS ""InvoiceQuantity"",
-                        od.""Quantity"" AS ""OrderQuantity"",
-                        id.""Amount"" AS ""InvoiceAmount"",
-                        od.""Amount"" AS ""OrderAmount"",
-                        CASE WHEN od.""Amount"" - id.""Amount"" <> 0 THEN true ELSE false END AS ""RedStatus""
-                    FROM public.""InvoiceDetails"" id
-                    JOIN public.""InvoiceHeaders"" ih ON id.""InvoiceID"" = ih.""InvoiceID""
-                    JOIN public.""OrderDetails"" od ON od.""OrderHeaderID"" = ih.""OrderID"" AND id.""Barcode"" = od.""Barcode""
-                    LEFT JOIN public.""Barcodes"" b ON id.""Barcode"" = b.""Barcode""
-                    LEFT JOIN public.""Catalogues"" c ON b.""ProductID"" = c.""ProductID""
-                    WHERE id.""InvoiceID"" = @InvoiceID;";
+    c.""Name"" AS ""Product"",
+    id.""Barcode"" AS ""Barcode"",
+    id.""Unit"",
+    id.""Quantity"" AS ""InvoiceQuantity"",
+    od.""Quantity"" AS ""OrderQuantity"",
+    id.""Amount"" AS ""InvoiceAmount"",
+    od.""Amount"" AS ""OrderAmount"",
+    CASE WHEN od.""Amount"" - id.""Amount"" <> 0 THEN true ELSE false END AS ""RedStatus""
+FROM public.""InvoiceDetails"" id
+JOIN public.""InvoiceHeaders"" ih ON id.""InvoiceID"" = ih.""InvoiceID""
+JOIN public.""OrderHeaders"" oh ON ih.""OrderID"" = oh.""OrderID""
+JOIN public.""OrderDetails"" od ON od.""OrderHeaderID"" = ih.""OrderID"" AND id.""Barcode"" = od.""Barcode""
+LEFT JOIN public.""Barcodes"" b ON id.""Barcode"" = b.""Barcode"" and oh.""AccountID"" = b.""AccountId""
+LEFT JOIN public.""Catalogues"" c ON b.""ProductID"" = c.""ProductID""
+WHERE id.""InvoiceID"" = @InvoiceID;";
 
                 var parameters = new[]
                 {

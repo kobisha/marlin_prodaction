@@ -34,7 +34,32 @@ namespace Marlin.sqlite.Controllers
 
             try
             {
-                _context.PriceList.AddRange(priceListData);
+                foreach (var item in priceListData)
+                {
+                    var existingItem = _context.PriceList
+                        .FirstOrDefault(p =>
+                            p.AccountID == item.AccountID &&
+                            p.RetailerID == item.RetailerID &&
+                            p.PriceType == item.PriceType &&
+                            p.Barcode == item.Barcode);
+
+                    if (existingItem != null)
+                    {
+                        // If the item exists, update it
+                        existingItem.Unit = item.Unit; // Update other properties as needed
+                        existingItem.Price = item.Price;
+                        existingItem.LastPrice = item.LastPrice;
+                        // Update more properties...
+
+                        _context.PriceList.Update(existingItem);
+                    }
+                    else
+                    {
+                        // If the item doesn't exist, create a new one
+                        _context.PriceList.Add(item);
+                    }
+                }
+
                 _context.SaveChanges();
 
                 return Ok(new { message = "Data imported successfully" });
@@ -45,9 +70,9 @@ namespace Marlin.sqlite.Controllers
             }
         }
 
-        
 
-    [HttpGet]
+
+        [HttpGet]
         public async Task<IActionResult> GetOrders([FromQuery] PaginationFilter filter)
         {
             var route = Request.Path.Value;
@@ -61,7 +86,7 @@ namespace Marlin.sqlite.Controllers
             return Ok(pagedReponse);
         }
 
-        
+
 
 
     }

@@ -19,7 +19,7 @@ namespace Marlin.sqlite.Controllers
             _context = context;
         }
 
-        [HttpGet("{AccountID}/{VendorID}")]
+        [HttpGet("{RetailID}/{VendorID}")]
         public IActionResult GetData(string AccountID, string VendorID)
         {
             try
